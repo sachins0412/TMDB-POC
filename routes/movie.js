@@ -7,18 +7,18 @@ const agent = new https.Agent({
     rejectUnauthorized: false,//add when working with https sites
 
 });
-const options = {
-    headers: {
-        popularity: 7
-    }
-};
 /* GET movies listing. */
 router.get('/', function (req, res, next) {
+    var popularity = req.get('popularity');
+    var releaseDate = new Date(req.get('releaseDate'));
     axios.get('https://api.themoviedb.org/3/movie/now_playing?' +
-        'api_key=5f87472d074a1553eb87e218a514432d&language=en-US&page=1', { httpsAgent: agent }, options)
+        'api_key=5f87472d074a1553eb87e218a514432d&language=en-US&page=1', { httpsAgent: agent })
         .then(function (response) {
-            res.json(response.data);
-            console.log(res);
+            const result = response.data.results
+                .filter(item => item.popularity > popularity &&
+                    (new Date(item.release_date)) > releaseDate);
+            res.json(result);
+            //console.log(res);
         }).catch(function (error) {
             console.log(error);
         })
