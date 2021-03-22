@@ -1,13 +1,16 @@
-//var express = require('express');
+var express = require('express');
 const axios = require('axios');
 const https = require('https');
+
+//Required when facing ssl certificate error
 const agent = new https.Agent({
     rejectUnauthorized: false,//add when working with https sites
 
 });
 
-module.exports=function getMovie(req, res) {
+function getMovie(req, res) {
     var popularity = req.get('popularity');
+    //setting releaseDate to min if not provided
     if (!req.get('releaseDate')) {
         releaseDate = new Date(-8640000000000000);
     }
@@ -15,6 +18,7 @@ module.exports=function getMovie(req, res) {
         releaseDate = new Date(req.get('releaseDate'));
     }
     var genres = req.get('genre');
+    //setting popularity to min if not provided
     if (popularity == null) {
         popularity = Number.MIN_VALUE;
     }
@@ -24,11 +28,12 @@ module.exports=function getMovie(req, res) {
     var requestTwo = axios.get(genreUrl, { httpsAgent: agent });
     axios.all([requestOne, requestTwo])
         .then(axios.spread((...responses) => {
-            const responseOne = responses[0];
-            const responseTwo = responses[1];
+            const responseOne = responses[0];  // list of movies
+            const responseTwo = responses[1];  // list of genreId and genreNames
+            //if genre header isnt empty
             if (genres) {
-                genres = genres.split(',');
-
+                genres = genres.split(',');// splitting the genre separated by commas in headerfield
+                //getting the genre specified with thier Ids
                 const genreReq = responseTwo.data.genres
                     .filter(item => genres.includes(item.name));
 
@@ -40,6 +45,7 @@ module.exports=function getMovie(req, res) {
                                 bool = true;
                             }
                         });
+                        //comparing genreId,popularity,releasedate
                         return (bool && (item.popularity > popularity) && (new Date(item.release_date)) > releaseDate);
                     });
                 res.json(result);
@@ -55,3 +61,5 @@ module.exports=function getMovie(req, res) {
             console.log(error);
         })
 }
+
+exports.getMovie=getMovie;
