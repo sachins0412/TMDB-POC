@@ -1,18 +1,14 @@
-var express = require('express');
-var router = express.Router();
-/* const axios = require('axios');
-const https = require('https'); */
-var service = require('./service/movieservice');
-
-/* const agent = new https.Agent({
+//var express = require('express');
+const axios = require('axios');
+const https = require('https');
+const agent = new https.Agent({
     rejectUnauthorized: false,//add when working with https sites
 
-}); */
-/* GET movies listing. */
-router.get('/', function (req, res, next) {
-/*     var popularity = req.get('popularity');
+});
+
+module.exports=function getMovie(req, res) {
+    var popularity = req.get('popularity');
     if (!req.get('releaseDate')) {
-        console.log("poopop");
         releaseDate = new Date(-8640000000000000);
     }
     else {
@@ -58,8 +54,4 @@ router.get('/', function (req, res, next) {
         )).catch(function (error) {
             console.log(error);
         })
- */
-        service.getMovie(req,res);
-});
-
-module.exports = router;
+}
