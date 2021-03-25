@@ -9,6 +9,7 @@ const agent = new https.Agent({
 });
 
 function getMovie(req, res) {
+    console.log("hi "+req);
     var popularity = req.get('popularity');
     //setting releaseDate to min if not provided
     if (!req.get('releaseDate')) {

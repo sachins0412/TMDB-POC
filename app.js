@@ -3,11 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+//swagger import
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
+
 var movieRouter = require('./routes/movie');
+
 var app = express();
 
 // view engine setup
@@ -23,8 +25,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//setting up swagger
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerDocument));
+
+
 app.use('/movie',movieRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
