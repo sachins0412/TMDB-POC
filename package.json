@@ -3,9 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "server": "node ./dist-server/bin/www",
+    "transpile": "babel ./server --out-dir dist-server",
+    "clean": "rimraf dist-server",
+    "build": "npm-run-all clean transpile",
+    "dev": "NODE_ENV=development npm-run-all build server"
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"]
   },
   "dependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
     "@bennadel/circuit-breaker": "0.0.1",
     "axios": "^0.21.1",
     "cookie-parser": "~1.4.4",
@@ -15,7 +25,9 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
+    "npm-run-all": "^4.1.5",
     "opossum": "^6.0.0",
+    "rimraf": "^3.0.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   }
